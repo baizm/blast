@@ -1,13 +1,11 @@
 import sys
 import re
 
-#usage: python xml_parser.py in_file out_file
-
 in_file = sys.argv[1]
 out_file = sys.argv[2]
 
 output = open(out_file,'w')
-print >> output, 'read'+'\t'+'hit_def'+'\t'+'hit_acc'+'\t'+'e'
+print >> output, 'query'+'\t'+'hit_def'+'\t'+'hit_from'+'\t'+'hit_to'+'\t'+'hit_accession'+'\t'+'e-value'
 
 with open(in_file,'r') as xml:
         for i in xml:
@@ -31,7 +29,15 @@ with open(in_file,'r') as xml:
                 i = i.split('>',1)[-1]
                 i = i.split('<', 1)[-2]
                 e_val = i
-                print >> output, query_def+'\t'+hit_def+'\t'+hit_acc+'\t'+e_val 
+	    if re.search('<Hsp_hit-from>', i) != None:
+                i = i.split('>',1)[-1]
+                i = i.split('<', 1)[-2]
+                hit_from = i
+            if re.search('<Hsp_hit-to>', i) != None:
+                i = i.split('>',1)[-1]
+                i = i.split('<', 1)[-2]
+                hit_to = i
+                print >> output, query_def+'\t'+hit_def+'\t'+hit_from+'\t'+hit_to+'\t'+hit_acc+'\t'+e_val 
 
 output.close()
 
