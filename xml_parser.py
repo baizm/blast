@@ -5,7 +5,7 @@ in_file = sys.argv[1]
 out_file = sys.argv[2]
 
 output = open(out_file,'w')
-print >> output, 'query'+'\t'+'hit_def'+'\t'+'hit_from'+'\t'+'hit_to'+'\t'+'hit_accession'+'\t'+'e-value'
+print >> output, 'query'+'\t'+'query_length'+'\t'+'alignment_length'+'\t'+'hit_def'+'\t'+'hit_from'+'\t'+'hit_to'+'\t'+'hit_accession'+'\t'+'e-value'
 
 with open(in_file,'r') as xml:
         for i in xml:
@@ -13,6 +13,10 @@ with open(in_file,'r') as xml:
                 i = i.split('>',1)[-1]
                 i = i.split('<', 1)[-2]
                 query_def = i
+            if re.search('<Iteration_query-len>', i) != None:
+                i = i.split('>',1)[-1]
+                i = i.split('<', 1)[-2]
+                query_len = i
             if re.search('No hits found', i) != None:
                 i = i.split('>',1)[-1]
                 i = i.split('<', 1)[-2]
@@ -37,7 +41,11 @@ with open(in_file,'r') as xml:
                 i = i.split('>',1)[-1]
                 i = i.split('<', 1)[-2]
                 hit_to = i
-                print >> output, query_def+'\t'+hit_def+'\t'+hit_from+'\t'+hit_to+'\t'+hit_acc+'\t'+e_val 
+            if re.search('<Hsp_align-len>', i) != None:
+                i = i.split('>',1)[-1]
+                i = i.split('<', 1)[-2]
+                align_len = i
+                print >> output, query_def+'\t'+query_len+'\t'+align_len+'\t'+hit_def+'\t'+hit_from+'\t'+hit_to+'\t'+hit_acc+'\t'+e_val 
 
 output.close()
 
